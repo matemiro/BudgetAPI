@@ -3,11 +3,13 @@ import json
 import pytest
 from django.urls import reverse
 
-from app.models import Budget, BudgetShares
+from app.models import Budget, BudgetShares, CashFlowCategory
 from app.tests.factories import (
     BudgetFactory,
     BudgetWithTwoReadOnlySharedUsersFactory,
+    CashFlowCategoryFactory,
 )
+from users.tests.factories import UserFactory
 
 
 @pytest.mark.django_db
@@ -108,3 +110,72 @@ def test_unauthenticated_user_cant_create_budget(unauthenticated_user_client):
         content_type="application/json",
     )
     assert response.status_code == 401
+
+
+@pytest.mark.django_db
+def test_user_list_budget_categories(authenticated_user_client, user):
+
+    budget = BudgetFactory.create(creator=user)
+    CashFlowCategoryFactory.create_batch(size=5, budget=budget)
+    assert CashFlowCategory.objects.filter(budget=budget).count() == 5
+
+    response = authenticated_user_client.get(
+        reverse("categories-list"), data={"budget": budget.id}
+    )
+    assert response.status_code == 200
+
+    expected_response = [
+        {
+            "id": category.id,
+            "name": category.name,
+            "description": category.description,
+            "budget": budget.id,
+        }
+        for category in CashFlowCategory.objects.filter(budget=budget)
+    ]
+    assert response.json() == expected_response
+
+
+@pytest.mark.django_db
+def test_unauthenticated_user_cant_list_budget_categories(
+    unauthenticated_user_client,
+):
+
+    url = reverse("categories-list")
+    response = unauthenticated_user_client.get(url, data={"budget": 1})
+    assert response.status_code == 401
+
+
+@pytest.mark.django_db
+def test_user_cant_list_foreign_categories(authenticated_user_client):
+
+    budget = BudgetFactory.create(creator=UserFactory.create())
+    response = authenticated_user_client.get(
+        reverse("categories-list"), data={"budget": budget.id}
+    )
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_user_list_provided_categories(authenticated_user_client, user):
+
+    budget = BudgetFactory.create(creator=UserFactory.create())
+    budget.shared_with.add(user)
+
+    CashFlowCategoryFactory.create_batch(size=3, budget=budget)
+
+    response = authenticated_user_client.get(
+        reverse("categories-list"), data={"budget": budget.id}
+    )
+    assert response.status_code == 200
+
+    expected_response = [
+        {
+            "id": category.id,
+            "name": category.name,
+            "description": category.description,
+            "budget": budget.id,
+        }
+        for category in CashFlowCategory.objects.filter(budget=budget)
+    ]
+    assert response.json() == expected_response

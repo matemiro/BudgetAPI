@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.fields import CharField
 
-from app.models import Budget, BudgetShares
+from app.models import Budget, BudgetShares, CashFlowCategory
 from utils import pop_null_values_from_dict
 from users.serializers import UserSerializer
 
@@ -51,3 +51,16 @@ class BudgetRetrieveSerializer(serializers.ModelSerializer):
             "creator",
             "shares",
         )
+
+
+class CashFlowCategoryCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CashFlowCategory
+        fields = ("id", "name", "description", "budget")
+
+
+class CashFlowCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CashFlowCategory
+        fields = ("id", "name", "description", "budget")
+        extra_kwargs = {"budget": {"read_only": True}}
