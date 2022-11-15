@@ -5,7 +5,6 @@ from utils import has_user_budget_permission
 
 
 class IsBudgetCreatorOrSharing(permissions.BasePermission):
-
     def has_permission(self, request, view):
 
         budget_id = request.data.get("budget") or request.query_params.get(
@@ -27,7 +26,6 @@ class IsBudgetCreatorOrSharing(permissions.BasePermission):
 
 
 class IsCategoryBudgetCreatorOrSharing(permissions.BasePermission):
-
     def has_object_permission(self, request, view, category):
 
         budget = category.budget

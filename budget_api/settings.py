@@ -143,6 +143,6 @@ REST_FRAMEWORK = {
 
 if DEBUG:
     SIMPLE_JWT = {
-        'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
-        'ACCESS_TOKEN_LIFETIME': timedelta(days=15),
+        "REFRESH_TOKEN_LIFETIME": timedelta(days=15),
+        "ACCESS_TOKEN_LIFETIME": timedelta(days=15),
     }

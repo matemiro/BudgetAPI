@@ -5,8 +5,10 @@ from rest_framework.viewsets import ModelViewSet
 
 from app.filters import CreatorFilterBackend
 from app.models import Budget, CashFlowCategory
-from app.permissions import IsBudgetCreatorOrSharing, \
-    IsCategoryBudgetCreatorOrSharing
+from app.permissions import (
+    IsBudgetCreatorOrSharing,
+    IsCategoryBudgetCreatorOrSharing,
+)
 from app.serializers import (
     BudgetSerializer,
     BudgetRetrieveSerializer,
