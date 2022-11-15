@@ -5,7 +5,7 @@ from rest_framework.generics import get_object_or_404
 
 from app.models import Budget, BudgetShares, CashFlowCategory, CashFlow
 from utils import pop_null_values_from_dict
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, UserUsernameSerializer
 
 
 class BudgetSerializer(serializers.ModelSerializer):
@@ -76,7 +76,6 @@ class CashFlowListSerializer(serializers.ModelSerializer):
 
 
 class CashFlowDetailSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = CashFlow
         fields = (
@@ -153,3 +152,25 @@ class CashFlowPartialUpdateSerializer(serializers.ModelSerializer):
         if not category.budget == budget:
             raise ValidationError("No such category in budget.")
         return category
+
+
+class BudgetShareCreateUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BudgetShares
+        fields = ("id", "budget", "shared_with", "role")
+
+    def validate_shared_with(self, user):
+
+        if user == self.context["request"].user:
+            raise ValidationError("Can't share with budget creator.")
+        return user
+
+
+class BudgetSharePartialUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BudgetShares
+        fields = ("id", "budget", "shared_with", "role")
+        extra_kwargs = {
+            "budget": {"read_only": True},
+            "shared_with": {"read_only": True},
+        }

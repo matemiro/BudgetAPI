@@ -1,10 +1,15 @@
 from rest_framework import status
+from rest_framework.mixins import (
+    CreateModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin,
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ViewSetMixin, GenericViewSet
 
 from app.filters import CreatorFilterBackend
-from app.models import Budget, CashFlowCategory, CashFlow
+from app.models import Budget, CashFlowCategory, CashFlow, BudgetShares
 from app.permissions import (
     IsBudgetCreatorOrSharing,
     IsObjectsBudgetCreatorOrSharing,
@@ -13,9 +18,13 @@ from app.serializers import (
     BudgetSerializer,
     BudgetRetrieveSerializer,
     CashFlowCategoryCreateSerializer,
-    CashFlowCategorySerializer, CashFlowCreateUpdateSerializer,
-    CashFlowDetailSerializer, CashFlowPartialUpdateSerializer,
+    CashFlowCategorySerializer,
+    CashFlowCreateUpdateSerializer,
+    CashFlowDetailSerializer,
+    CashFlowPartialUpdateSerializer,
     CashFlowListSerializer,
+    BudgetShareCreateUpdateSerializer,
+    BudgetSharePartialUpdateSerializer,
 )
 
 
@@ -89,3 +98,24 @@ class CashFlowViewSet(ModelViewSet):
         else:
             return CashFlowListSerializer
 
+
+class BudgetSharesViewSet(
+    CreateModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet
+):
+
+    queryset = BudgetShares.objects.all()
+
+    def get_permissions(self):
+        permissions = [IsAuthenticated]
+        if self.action in ["destroy", "partial_update", "update"]:
+            permissions.append(IsObjectsBudgetCreatorOrSharing)
+        else:
+            permissions.append(IsBudgetCreatorOrSharing)
+
+        return [permission() for permission in permissions]
+
+    def get_serializer_class(self):
+        if self.action in ["create", "update"]:
+            return BudgetShareCreateUpdateSerializer
+        else:
+            return BudgetSharePartialUpdateSerializer

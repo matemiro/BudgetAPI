@@ -36,4 +36,3 @@ class IsObjectsBudgetCreatorOrSharing(permissions.BasePermission):
         return has_user_budget_permission(
             user=request.user, budget=budget, request_method=request.method
         )
-
