@@ -5,7 +5,7 @@ from rest_framework.generics import get_object_or_404
 
 from app.models import Budget, BudgetShares, CashFlowCategory, CashFlow
 from utils import pop_null_values_from_dict
-from users.serializers import UserSerializer, UserUsernameSerializer
+from users.serializers import UserSerializer
 
 
 class BudgetSerializer(serializers.ModelSerializer):
