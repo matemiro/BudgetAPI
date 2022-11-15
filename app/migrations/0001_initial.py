@@ -55,7 +55,8 @@ class Migration(migrations.Migration):
                 (
                     "budget",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="app.budget"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="app.budget",
                     ),
                 ),
             ],
@@ -72,7 +73,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("amount", models.DecimalField(decimal_places=2, max_digits=20)),
+                (
+                    "amount",
+                    models.DecimalField(decimal_places=2, max_digits=20),
+                ),
                 ("name", models.CharField(max_length=20)),
                 ("description", models.TextField(blank=True, default="")),
                 (
@@ -84,7 +88,8 @@ class Migration(migrations.Migration):
                 (
                     "budget",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="app.budget"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="app.budget",
                     ),
                 ),
                 (
@@ -119,7 +124,8 @@ class Migration(migrations.Migration):
                 (
                     "budget",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="app.budget"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="app.budget",
                     ),
                 ),
                 (
