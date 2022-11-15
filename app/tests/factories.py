@@ -16,3 +16,32 @@ class BudgetFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Budget
+
+
+class BudgetSharesFactory(factory.django.DjangoModelFactory):
+
+    budget = factory.SubFactory(BudgetFactory)
+    shared_with = factory.SubFactory(UserFactory)
+    role = FuzzyChoice(ROLE_CHOICES)
+
+    class Meta:
+        model = BudgetShares
+
+
+class ReadOnlyBudgetSharesFactory(BudgetSharesFactory):
+
+    role = BudgetShares.read_only
+
+
+class EditorBudgetSharesFactory(BudgetSharesFactory):
+
+    role = BudgetShares.editor
+
+
+class BudgetWithTwoReadOnlySharedUsersFactory(BudgetFactory):
+    sharing1 = factory.RelatedFactory(
+        ReadOnlyBudgetSharesFactory, factory_related_name="budget"
+    )
+    sharing2 = factory.RelatedFactory(
+        ReadOnlyBudgetSharesFactory, factory_related_name="budget"
+    )
