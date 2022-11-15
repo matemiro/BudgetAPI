@@ -1,8 +1,9 @@
 from rest_framework import serializers
+from rest_framework.fields import CharField
 
-from app.models import Budget
+from app.models import Budget, BudgetShares
 from utils import pop_null_values_from_dict
-from users.serializers import UserUsernameSerializer
+from users.serializers import UserSerializer
 
 
 class BudgetSerializer(serializers.ModelSerializer):
@@ -23,9 +24,23 @@ class BudgetSerializer(serializers.ModelSerializer):
         return pop_null_values_from_dict(representation)
 
 
+class BudgetSharesSerializer(serializers.ModelSerializer):
+
+    username = CharField(source="shared_with.username", read_only=True)
+
+    class Meta:
+        model = BudgetShares
+        fields = (
+            "id",
+            "username",
+            "role",
+        )
+
+
 class BudgetRetrieveSerializer(serializers.ModelSerializer):
 
-    shared_with = UserUsernameSerializer(read_only=True, many=True)
+    shares = BudgetSharesSerializer(source="budgetshares_set", many=True)
+    creator = UserSerializer()
 
     class Meta:
         model = Budget
@@ -33,5 +48,6 @@ class BudgetRetrieveSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "description",
-            "shared_with",
+            "creator",
+            "shares",
         )

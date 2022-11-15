@@ -6,7 +6,9 @@ from users.tests.factories import UserFactory
 
 
 @pytest.mark.django_db
-def test_unauthenticated_user_cant_get_budgets_list(unauthenticated_user_client):
+def test_unauthenticated_user_cant_get_budgets_list(
+    unauthenticated_user_client,
+):
 
     response = unauthenticated_user_client.get(reverse("budgets-list"))
     assert response.status_code == 401
