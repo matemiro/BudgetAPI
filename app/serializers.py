@@ -1,7 +1,9 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
+from rest_framework.generics import get_object_or_404
 
-from app.models import Budget, BudgetShares, CashFlowCategory
+from app.models import Budget, BudgetShares, CashFlowCategory, CashFlow
 from utils import pop_null_values_from_dict
 from users.serializers import UserSerializer
 
@@ -64,3 +66,90 @@ class CashFlowCategorySerializer(serializers.ModelSerializer):
         model = CashFlowCategory
         fields = ("id", "name", "description", "budget")
         extra_kwargs = {"budget": {"read_only": True}}
+
+
+class CashFlowListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CashFlow
+        fields = ("id", "name", "amount", "type", "category")
+        extra_kwargs = {"category": {"read_only": True}}
+
+
+class CashFlowDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CashFlow
+        fields = (
+            "id",
+            "amount",
+            "name",
+            "description",
+            "budget",
+            "type",
+            "category",
+        )
+        extra_kwargs = {
+            "budget": {"read_only": True},
+            "category": {"read_only": True},
+        }
+
+
+class CashFlowCreateUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CashFlow
+        fields = (
+            "id",
+            "amount",
+            "name",
+            "description",
+            "budget",
+            "type",
+            "category",
+        )
+
+    def validate(self, data):
+        """
+        Prevent situation to set category witch not exist in budget.
+        """
+
+        budget = data.get("budget")
+        category = data.get("category")
+
+        if not category:
+            return data
+
+        if not category.budget == budget:
+            raise ValidationError("No such category in budget.")
+
+        return data
+
+
+class CashFlowPartialUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CashFlow
+        fields = (
+            "id",
+            "amount",
+            "name",
+            "description",
+            "budget",
+            "type",
+            "category",
+        )
+        extra_kwargs = {
+            "budget": {"read_only": True, "required": False},
+            "type": {"required": False},
+            "name": {"required": False},
+            "amount": {"required": False},
+        }
+
+    def validate_category(self, category):
+        """
+        Prevent situation to set category witch not belongs to edited budget.
+        """
+        budget = get_object_or_404(
+            CashFlow, pk=self.context["view"].kwargs["pk"]
+        ).budget
+        if not category.budget == budget:
+            raise ValidationError("No such category in budget.")
+        return category

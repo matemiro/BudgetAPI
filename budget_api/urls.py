@@ -22,12 +22,13 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-from app.views import BudgetViewSet, CashFlowCategoryViewSet
+from app.views import BudgetViewSet, CashFlowCategoryViewSet, CashFlowViewSet
 from users.views import CreateUserView
 
 router = routers.DefaultRouter()
 router.register(r"budgets", BudgetViewSet, basename="budgets")
 router.register(r"categories", CashFlowCategoryViewSet, basename="categories")
+router.register(r"cash-flows", CashFlowViewSet, basename="cash_flows")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
