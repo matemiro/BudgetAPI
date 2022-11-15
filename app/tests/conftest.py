@@ -1,1 +1,5 @@
-from users.tests.conftest import user, unauthenticated_user_client
+from users.tests.conftest import (
+    user,
+    unauthenticated_user_client,
+    authenticated_user_client,
+)

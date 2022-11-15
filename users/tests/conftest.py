@@ -10,6 +10,13 @@ def user(db, django_user_model):
 
 
 @pytest.fixture
+def authenticated_user_client(db, user):
+    auth_user_client = APIClient()
+    auth_user_client.force_authenticate(user)
+    return auth_user_client
+
+
+@pytest.fixture
 def unauthenticated_user_client():
     return APIClient()
 
