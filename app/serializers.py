@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
@@ -42,10 +43,41 @@ class BudgetSharesSerializer(serializers.ModelSerializer):
         )
 
 
+class CashFlowsTotalBalanceSerializer(serializers.ModelSerializer):
+
+    incomes = serializers.SerializerMethodField()
+    expenses = serializers.SerializerMethodField()
+    total = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CashFlow
+        fields = ("incomes", "expenses", "total")
+
+    def get_incomes(self, cash_flows):
+        return (
+            cash_flows.filter(type=CashFlow.income).aggregate(Sum("amount"))[
+                "amount__sum"
+            ]
+            or 0
+        )
+
+    def get_expenses(self, cash_flows):
+        return (
+            cash_flows.filter(type=CashFlow.expense).aggregate(Sum("amount"))[
+                "amount__sum"
+            ]
+            or 0
+        )
+
+    def get_total(self, cash_flows):
+        return cash_flows.aggregate(Sum("amount"))["amount__sum"] or 0
+
+
 class BudgetRetrieveSerializer(serializers.ModelSerializer):
 
     shares = BudgetSharesSerializer(source="budgetshares_set", many=True)
     creator = UserSerializer()
+    total_balance = CashFlowsTotalBalanceSerializer(source="cashflow_set")
 
     class Meta:
         model = Budget
@@ -55,6 +87,7 @@ class BudgetRetrieveSerializer(serializers.ModelSerializer):
             "description",
             "creator",
             "shares",
+            "total_balance",
         )
 
 
