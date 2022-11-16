@@ -21,7 +21,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "password", "email")
 
     def validate_email(self, email):
-        if UserModel.objects.filter(email=email):
+        if (not email == "") and UserModel.objects.filter(email=email):
             raise ValidationError("User with given email already exist.")
         return email
 
