@@ -88,6 +88,19 @@ DATABASES = {
     }
 }
 
+USE_POSTGRES_DB = config("USE_POSTGRES_DB", cast=bool, default=False)
+if USE_POSTGRES_DB:
+    POSTGRES_PASSWORD = config("POSTGRES_PASSWORD")
+    POSTGRES_USER = config("POSTGRES_USER")
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "postgres",
+        "USER": POSTGRES_USER,
+        "PASSWORD": POSTGRES_PASSWORD,
+        "HOST": "db",
+        "PORT": "5432",
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
