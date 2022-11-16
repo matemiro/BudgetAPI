@@ -3,6 +3,10 @@ Application allow for creating user accounts. Users are authenticated via JWT Au
 
 Project is still under development. Not all functionalities are covered by unit tests yet. 
 
+## Database diagram
+![Screenshot](BudgetAPI_dbdiagram.png)
+
+
 ## Run application
 
 #### Clone repository
