@@ -33,6 +33,13 @@ Run tests using command:
 
 ## Endpoints
 
+##### Permissions:
+- Any user can create budget.
+- Only budget creator can share it to another user.
+- Adding/updating categories or cash flows requires being budget **creator** *or* having **editor** role.
+
+- Retrieving objects details requires being budget creator *or* having **editor**/**read only** role.
+
 | Method  | Endpoint                           | Description                                                                                                                             | Parameters (*required)                                                                                                                        |
 |---------|------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
 | `POST`  | `/register/`                       | Create new account                                                                                                                      | `username`*, `password`*, `email`                                                                                                             |
