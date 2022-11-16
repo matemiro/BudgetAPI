@@ -6,7 +6,7 @@ from rest_framework.mixins import (
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, ViewSetMixin, GenericViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from app.filters import CreatorFilterBackend
 from app.models import Budget, CashFlowCategory, CashFlow, BudgetShares
@@ -55,7 +55,6 @@ class BudgetViewSet(ModelViewSet):
 class CashFlowCategoryViewSet(ModelViewSet):
 
     queryset = CashFlowCategory.objects.all()
-    serializer_class = CashFlowCategorySerializer
 
     def get_permissions(self):
         permissions = [
