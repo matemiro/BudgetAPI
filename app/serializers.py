@@ -22,6 +22,9 @@ class BudgetSerializer(serializers.ModelSerializer):
         )
 
     def to_representation(self, instance):
+        """
+        Prevent situation to set category witch not belongs to edited budget.
+        """
         representation = super().to_representation(instance)
         return pop_null_values_from_dict(representation)
 
@@ -160,6 +163,9 @@ class BudgetShareCreateUpdateSerializer(serializers.ModelSerializer):
         fields = ("id", "budget", "shared_with", "role")
 
     def validate_shared_with(self, user):
+        """
+        Checking if the budget is not shared with the budget creator.
+        """
 
         if user == self.context["request"].user:
             raise ValidationError("Can't share with budget creator.")

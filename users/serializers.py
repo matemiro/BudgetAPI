@@ -21,6 +21,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "password", "email")
 
     def validate_email(self, email):
+        """
+        Email must be unique or empty string ("").
+        """
         if (not email == "") and UserModel.objects.filter(email=email):
             raise ValidationError("User with given email already exist.")
         return email
@@ -42,5 +45,8 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
     def to_representation(self, instance):
+        """
+        Return only not null values.
+        """
         representation = super().to_representation(instance)
         return pop_null_values_from_dict(representation)
