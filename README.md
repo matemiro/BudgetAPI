@@ -9,10 +9,8 @@ Project is still under development. Not all functionalities are covered by unit 
 ```
 git clone https://github.com/matemiro/WeatherAPI.git
 ```
-#### Create `.env` file in main folder with environment variables according to `.env-sample` file.
-```
-sudo docker-compose up
-```
+#### Environment variables
+Create `.env` file in main folder with environment variables according to `.env-sample` file.
 
 #### Run docker containers
 ```
