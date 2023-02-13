@@ -4,7 +4,6 @@ from users.models import CustomUser
 
 
 class Budget(models.Model):
-
     creator = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="budget_creator"
     )
@@ -19,7 +18,6 @@ class Budget(models.Model):
 
 
 class BudgetShares(models.Model):
-
     ROLES = (
         (read_only := 1, "read_only"),
         (editor := 2, "editor"),
@@ -37,14 +35,12 @@ class BudgetShares(models.Model):
 
 
 class CashFlowCategory(models.Model):
-
     name = models.CharField(max_length=20)
     description = models.TextField(blank=True, default="")
     budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
 
 
 class CashFlow(models.Model):
-
     CASH_FLOW_TYPES = (
         (income := 1, "income"),
         (expense := 2, "expense"),

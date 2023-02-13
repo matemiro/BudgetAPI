@@ -6,7 +6,6 @@ from users.models import CustomUser
 
 @pytest.mark.django_db
 def test_register_user(unauthenticated_user_client, new_user_complete_data):
-
     response = unauthenticated_user_client.post(
         reverse("register"), data=new_user_complete_data
     )
@@ -23,7 +22,6 @@ def test_register_user(unauthenticated_user_client, new_user_complete_data):
 def test_register_user_without_email(
     unauthenticated_user_client, new_user_without_email_data
 ):
-
     response = unauthenticated_user_client.post(
         reverse("register"), data=new_user_without_email_data
     )
@@ -40,7 +38,6 @@ def test_register_user_without_email(
 def test_cant_register_user_with_existing_username(
     unauthenticated_user_client, user, strong_password
 ):
-
     existing_username = user.username
     response = unauthenticated_user_client.post(
         reverse("register"),
@@ -56,7 +53,6 @@ def test_cant_register_user_with_existing_username(
 def test_cant_register_user_with_existing_email(
     unauthenticated_user_client, user, strong_password
 ):
-
     existing_email = user.email
     response = unauthenticated_user_client.post(
         reverse("register"),

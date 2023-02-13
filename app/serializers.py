@@ -4,13 +4,12 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
 from rest_framework.generics import get_object_or_404
 
-from app.models import Budget, BudgetShares, CashFlowCategory, CashFlow
-from utils import pop_null_values_from_dict
+from app.models import Budget, BudgetShares, CashFlow, CashFlowCategory
 from users.serializers import UserSerializer
+from utils import pop_null_values_from_dict
 
 
 class BudgetSerializer(serializers.ModelSerializer):
-
     creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -31,7 +30,6 @@ class BudgetSerializer(serializers.ModelSerializer):
 
 
 class BudgetSharesSerializer(serializers.ModelSerializer):
-
     username = CharField(source="shared_with.username", read_only=True)
 
     class Meta:
@@ -44,7 +42,6 @@ class BudgetSharesSerializer(serializers.ModelSerializer):
 
 
 class CashFlowsTotalBalanceSerializer(serializers.ModelSerializer):
-
     incomes = serializers.SerializerMethodField()
     expenses = serializers.SerializerMethodField()
     total = serializers.SerializerMethodField()
@@ -74,7 +71,6 @@ class CashFlowsTotalBalanceSerializer(serializers.ModelSerializer):
 
 
 class BudgetRetrieveSerializer(serializers.ModelSerializer):
-
     shares = BudgetSharesSerializer(source="budgetshares_set", many=True)
     creator = UserSerializer()
     total_balance = CashFlowsTotalBalanceSerializer(source="cashflow_set")

@@ -5,3 +5,4 @@ djangorestframework==3.14.0
 djangorestframework_simplejwt==5.2.2
 pytest_django==4.5.2
 factory_boy==3.2.1
+flake8==6.0.0
