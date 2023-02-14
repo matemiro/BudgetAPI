@@ -14,21 +14,23 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework import routers
-from rest_framework_simplejwt.views import (
+
+from users.views import CreateUserView
+
+from rest_framework_simplejwt.views import (  # noqa, isort:skip
     TokenObtainPairView,
     TokenRefreshView,
     TokenVerifyView,
 )
 
-from app.views import (
+from app.views import (  # noqa, isort:skip
     BudgetViewSet,
     CashFlowCategoryViewSet,
     CashFlowViewSet,
     BudgetSharesViewSet,
 )
-from users.views import CreateUserView
 
 router = routers.DefaultRouter()
 router.register(r"budgets", BudgetViewSet, basename="budgets")
