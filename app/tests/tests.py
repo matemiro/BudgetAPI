@@ -67,6 +67,11 @@ def test_user_retrieve_budget_details(authenticated_user_client, user):
             "email": user.email,
         },
         "shares": shares,
+        "total_balance": {
+            "incomes": 0,
+            "expenses": 0,
+            "total": 0,
+        },
     }
     assert response.json() == expected_response_data
 
