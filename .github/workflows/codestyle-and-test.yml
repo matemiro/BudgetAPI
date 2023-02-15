@@ -1,0 +1,45 @@
+name: Codestyle and Test
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  codestyle:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Run pre-commit
+        run: |
+          pip install pre-commit
+          pre-commit run --all-files
+
+  test:
+    runs-on: ubuntu-latest
+    
+    env:
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_USER: myuser
+      DJANGO_ALLOWED_HOSTS: '*'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Install docker-compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+      
+      - name: Start containers
+        run: docker-compose up --build -d
+      
+      - name: Run tests
+        run: docker-compose exec web pytest -vs app/tests/tests.py users/tests/tests.py
+
+      - name: Stop containers
+        run: docker-compose down
