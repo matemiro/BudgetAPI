@@ -23,3 +23,6 @@ COPY . /app
 
 #let pip install required packages
 RUN pip install -r requirements.txt
+
+# Install pre-commit tool
+RUN pip install pre-commit
