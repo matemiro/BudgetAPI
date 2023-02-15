@@ -19,6 +19,7 @@ jobs:
           pre-commit run --all-files
 
   test:
+    needs: codestyle
     runs-on: ubuntu-latest
     
     env:
