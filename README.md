@@ -1,5 +1,17 @@
 # BudgetAPI
-Application allow for creating user accounts. Users are authenticated via JWT Authentication tokens. Each user can create `Budgets` and share it with any number of other users. The `Budget` consists of `CashFlows` (incomes or expenses). They can be grouped into categories `CashFlowCategories` witch belongs to `Budget`.
+
+## Purpose
+This repository contains a minimalist version of a REST API application that was created for recruitment processes to demonstrate and validate skills related to, among other things:
+- Python programming,
+- Django and DRF,
+- Docker, docker-compose,
+- Redis,
+- Celery, celery-beat,
+- Creating unit tests (pytest, factory-boy),
+- CI/CD (github workflows, pre-commit)
+
+## Application
+Application allows for creating user accounts. Users are authenticated via JWT Authentication tokens. Each user can create `Budgets` and share it with any number of other users. The `Budget` consists of `CashFlows` (incomes or expenses). They can be grouped into categories `CashFlowCategories` witch belongs to `Budget`.
 
 Project is still under development. Not all functionalities are covered by unit tests yet. 
 
