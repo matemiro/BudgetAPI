@@ -3,7 +3,11 @@ name: Codestyle and Test
 on:
   push:
     branches:
-      - '*'
+      - '**'
+  pull_request:
+    branches:
+      - main
+      - develop
 
 jobs:
   codestyle:
@@ -17,7 +21,6 @@ jobs:
         run: |
           pip install pre-commit
           pre-commit run --all-files
-
   test:
     needs: codestyle
     runs-on: ubuntu-latest
@@ -26,6 +29,13 @@ jobs:
       POSTGRES_PASSWORD: mypassword
       POSTGRES_USER: myuser
       DJANGO_ALLOWED_HOSTS: '*'
+      USE_POSTGRES_DB: True
+      EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
+      EMAIL_HOST: smtp.gmail.com
+      EMAIL_PORT: 587
+      EMAIL_USE_TLS: True
+      EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+      EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
 
     steps:
       - name: Checkout code
