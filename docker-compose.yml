@@ -11,6 +11,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      celery:
+        condition: service_healthy
+      celery-beat:
+        condition: service_healthy
+
     networks:
       - backend
     environment:
@@ -18,6 +23,12 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       USE_POSTGRES_DB: "True"
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+      EMAIL_BACKEND: ${EMAIL_BACKEND}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
     restart: always
   db:
     image: healthcheck/postgres
@@ -28,6 +39,72 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - backend
+
+  celery:
+    build: .
+    command: celery -A budget_api worker -l info -c 3 -Ofair
+    healthcheck:
+      test: [ "CMD", "celery", "-A", "budget_api", "inspect", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+    networks:
+      - backend
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      USE_POSTGRES_DB: "True"
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+      EMAIL_BACKEND: ${EMAIL_BACKEND}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+
+  celery-beat:
+    build: .
+    command: celery -A budget_api beat -l info
+    healthcheck:
+      test: [ "CMD", "celery", "-A", "budget_api", "inspect", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+    networks:
+      - backend
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      USE_POSTGRES_DB: "True"
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+      EMAIL_BACKEND: ${EMAIL_BACKEND}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+
+  redis:
+    image: "redis:alpine"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    ports:
+      - "6379:6379"
     networks:
       - backend
 

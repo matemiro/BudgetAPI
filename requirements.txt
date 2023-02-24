@@ -6,3 +6,5 @@ djangorestframework_simplejwt==5.2.2
 pytest_django==4.5.2
 factory_boy==3.2.1
 flake8==6.0.0
+celery==5.2.7
+redis==4.5.1
